@@ -452,12 +452,12 @@ class GameScene extends Phaser.Scene {
         // Recepção: pixels 1040–1260 do cenário original → multiplicar por escala
         // Elevador:  pixels 1570–1650 do cenário original → multiplicar por escala
         this.zonaRecepcao = {
-            x1: 1040 * escala,
-            x2: 1260 * escala,
+            x1: 1400 * escala,
+            x2: 1500 * escala,
         };
         this.zonaElevador = {
-            x1: 1570 * escala,
-            x2: 1750 * escala, // um pouco mais largo para facilitar o trigger
+            x1: 2300 * escala,
+            x2: 2450 * escala, // um pouco mais largo para facilitar o trigger
         };
 
         // ─── Indicador "[ E ]" fixo na câmera, acima do player ────────
@@ -745,6 +745,31 @@ class SegundoAndarScene extends Phaser.Scene {
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         this.pausando = false;
+
+        // ─── Zona de interação do segundo andar ─────────────────
+        this.zonaInteracao = {
+            x1: 1300 * escala,
+            x2: 1400 * escala
+        };
+
+        // Indicador E
+        this.indicadorE = this.add.text(width / 2, height * 0.55, '[ E ] Interagir',
+        {
+            fontFamily: 'Orbitron',
+            fontSize: '20px',
+            color: CORES.cianoTexto,
+            stroke: '#000000',
+            strokeThickness: 5,
+            backgroundColor: '#00000066',
+            padding: { x: 10, y: 4 }
+        })
+        .setOrigin(0.5)
+        .setScrollFactor(0)
+        .setAlpha(0)
+        .setDepth(15);
+
+        // tecla E
+        this.keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     }
 
     update() {
@@ -774,6 +799,22 @@ class SegundoAndarScene extends Phaser.Scene {
 
         if ((this.cursors.up.isDown || this.keys.W.isDown) && this.player.body.touching.down) {
             this.player.setVelocityY(-550);
+        }
+        const px = this.player.x;
+
+        // verifica se está na zona
+        const naZona = px >= this.zonaInteracao.x1 && px <= this.zonaInteracao.x2;
+
+        if (naZona) {
+            this.indicadorE.setAlpha(1);
+
+            if (Phaser.Input.Keyboard.JustDown(this.keyE)) {
+                console.log("Interação no segundo andar!");
+                // aqui você pode colocar diálogo, porta, npc, etc
+            }
+
+        } else {
+            this.indicadorE.setAlpha(0);
         }
     }
 }
